@@ -9,6 +9,9 @@
     #image-container {
       display: flex;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -17,7 +20,7 @@
   </div>
   <div id="image-container">
     <canvas width="500" height="500"></canvas>
-    <div>
+    <div id="message-area" class="hidden">
       <span>Top Line:</span><br/>
       <input id="topLineText" type="text"><br/>
       <span>Bottom Line:</span><br/>
@@ -39,10 +42,14 @@
 
     function redrawMeme(image, topLine, bottomLine) {
       // Get Canvas2DContext
+      document.getElementById('message-area').classList.remove('hidden');
       var canvas = document.querySelector('canvas');
       var ctx = canvas.getContext("2d");
-      ctx.strokeRect(0,10,500,500);
-      ctx.drawImage(image, 0, 10, 500, 500 * image.height / image.width);
+      var imageHeight = 500 * image.height / image.width;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 10, 500, imageHeight);
+      if (topLine) ctx.strokeText(topLine, 20, 20);
+      if (bottomLine) ctx.strokeText(bottomLine, 20, imageHeight);
     }
     
     function saveFile() {
@@ -50,8 +57,6 @@
     }
     
     function handleFileSelect(e) {
-      var canvasWidth = 500;
-      var canvasHeight = 500;
       var file = e.target.files[0];     
       var reader = new FileReader();
 
